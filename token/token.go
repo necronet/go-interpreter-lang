@@ -20,6 +20,9 @@ const(
 	PLUS = "+"
 	MINUS = "-"
 
+	EQ     = "=="
+	NOT_EQ = "!="
+
 	BANG     = "!"
         ASTERISK = "*"
         SLASH    = "/"
