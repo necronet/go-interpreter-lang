@@ -1,8 +1,8 @@
 package evaluator
 
-import(
-    "necronet.info/interpreter/ast"
-    "necronet.info/interpreter/object"
+import (
+	"necronet.info/interpreter/ast"
+	"necronet.info/interpreter/object"
 )
 
 var (
@@ -25,7 +25,11 @@ func Eval(node ast.Node) object.Object {
         left := Eval(node.Left)
         right := Eval(node.Right)
         return evalInfixExpression(node.Operator, left, right)
-    // Expressions
+        // Expressions
+    case *ast.BlockStatement:
+        return evalStatements(node.Statements) 
+    case *ast.IfExpression:
+        return evalIfExpression(node)
     case *ast.IntegerLiteral:
         return &object.Integer{Value: node.Value}
     case *ast.Boolean:
@@ -34,6 +38,30 @@ func Eval(node ast.Node) object.Object {
     return NULL 
 }
 
+func evalIfExpression(ie *ast.IfExpression) object.Object {
+    condition := Eval(ie.Condition)
+
+    if isTruth(condition) {
+        return Eval(ie.Consequence)
+    } else if ie.Alternative != nil {
+        return Eval(ie.Alternative)
+    } else {
+        return NULL
+    }
+}
+
+func isTruth(obj object.Object) bool {
+    switch obj {
+    case NULL:
+        return false
+    case TRUE:
+        return true
+    case FALSE:
+        return false
+    default:
+        return true
+    }
+}
 func evalInfixExpression(
     operator string,
     left, right object.Object) object.Object {
@@ -65,13 +93,13 @@ func evalInfixExpression(
             case "/":
                 return &object.Integer{Value: leftVal / rightVal}
             case "<":
-                return &object.Boolean{Value: leftVal < rightVal}
+                return nativeBoolToBooleanObject(leftVal < rightVal)
             case ">":
-                return &object.Boolean{Value: leftVal > rightVal}
+                return nativeBoolToBooleanObject(leftVal > rightVal) 
             case "==":
-                return &object.Boolean{Value: leftVal == rightVal}
+                return nativeBoolToBooleanObject(leftVal == rightVal) 
             case "!=":
-                return &object.Boolean{Value: leftVal != rightVal}
+                return nativeBoolToBooleanObject(leftVal != rightVal) 
             default:
                 return NULL
             }
