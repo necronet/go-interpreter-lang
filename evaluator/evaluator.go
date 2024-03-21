@@ -1,8 +1,8 @@
 package evaluator
 
 import (
-	"necronet.info/interpreter/ast"
-	"necronet.info/interpreter/object"
+    "necronet.info/interpreter/ast"
+    "necronet.info/interpreter/object"
 )
 
 var (
@@ -42,16 +42,16 @@ func Eval(node ast.Node) object.Object {
 }
 
 func evalBlockStatements(block *ast.BlockStatement) object.Object {
-   var result object.Object
+    var result object.Object
 
-   for _, statement := range block.Statements {
+    for _, statement := range block.Statements {
 
-       result = Eval(statement)
-       if result != nil && result.Type() == object.RETURN_VALUE_OBJ {
-           return result
-       }
-   }
-   return result
+        result = Eval(statement)
+        if result != nil && result.Type() == object.RETURN_VALUE_OBJ {
+            return result
+        }
+    }
+    return result
 }
 
 func evalProgram(program *ast.Program) object.Object {
@@ -134,55 +134,55 @@ func evalInfixExpression(
             }
         }
 
-func evalPrefixExpression(operator string, right object.Object) object.Object {
+        func evalPrefixExpression(operator string, right object.Object) object.Object {
 
-    switch operator {
-    case "!":
-        return evalBangOperatorExpression(right)
-    case "-":
-        return evalMinusPrefixOperatorExpression(right)
-    default:
-        return NULL
-    }
-}
-
-func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
-
-    if right.Type() != object.INTEGER_OBJ {
-        return NULL
-    }
-     value := right.(*object.Integer).Value
-     return &object.Integer{Value: -value}
-}
-
-func evalBangOperatorExpression(right object.Object) object.Object {
-
-    switch right {
-    case TRUE:
-        return FALSE
-    case FALSE:
-        return TRUE
-    case NULL:
-        return FALSE
-    default:
-        return FALSE
-}
-}
-func nativeBoolToBooleanObject(input bool) *object.Boolean {
-    if input {
-        return TRUE
-    }
-    return FALSE
-}
-
-func evalStatements(stmts []ast.Statement) object.Object {
-    var result object.Object
-
-    for _, statement := range stmts {
-        result = Eval(statement)
-        if returnValue, ok := result.(*object.ReturnValue); ok {
-            return returnValue.Value
+            switch operator {
+            case "!":
+                return evalBangOperatorExpression(right)
+            case "-":
+                return evalMinusPrefixOperatorExpression(right)
+            default:
+                return NULL
+            }
         }
-    }
-    return result
-}
+
+        func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
+
+            if right.Type() != object.INTEGER_OBJ {
+                return NULL
+            }
+            value := right.(*object.Integer).Value
+            return &object.Integer{Value: -value}
+        }
+
+        func evalBangOperatorExpression(right object.Object) object.Object {
+
+            switch right {
+            case TRUE:
+                return FALSE
+            case FALSE:
+                return TRUE
+            case NULL:
+                return FALSE
+            default:
+                return FALSE
+            }
+        }
+        func nativeBoolToBooleanObject(input bool) *object.Boolean {
+            if input {
+                return TRUE
+            }
+            return FALSE
+        }
+
+        func evalStatements(stmts []ast.Statement) object.Object {
+            var result object.Object
+
+            for _, statement := range stmts {
+                result = Eval(statement)
+                if returnValue, ok := result.(*object.ReturnValue); ok {
+                    return returnValue.Value
+                }
+            }
+            return result
+        }
