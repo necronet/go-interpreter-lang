@@ -40,6 +40,7 @@ const(
 
 	FUNCTION = "FUNCTION"
 	LET = "LET"
+    STRING = "STRING"
 	TRUE     = "TRUE"
 	FALSE    = "FALSE"
 	IF       = "IF"
