@@ -128,14 +128,6 @@ func evalExpressions( exps []ast.Expression, env *object.Environment) []object.O
     return result
 }
 
-func evalIdentifier(node *ast.Identifier, env *object.Environment,) object.Object {
-    val, ok := env.Get(node.Value)
-    if !ok {
-        return newError("identifier not found: " + node.Value)
-    }
-    return val
-}
-
 func newError(format string, a ...interface{}) *object.Error {
     return &object.Error{Message: fmt.Sprintf(format, a...)}
 }
@@ -254,6 +246,20 @@ func evalInfixExpression(
                 return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
             }
         }
+
+        func evalIdentifier( node *ast.Identifier,
+        env *object.Environment,
+    ) object.Object {
+        if val, ok := env.Get(node.Value); ok {
+            return val
+        }
+
+        if builtin, ok := builtins[node.Value]; ok {
+            return builtin
+        }
+
+        return newError("identifier not found: " + node.Value)
+    }
 
         func evalPrefixExpression(operator string, right object.Object) object.Object {
 
