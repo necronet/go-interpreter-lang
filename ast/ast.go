@@ -285,7 +285,22 @@ func (al *ArrayLiteral) String() string {
     return out.String()
 }
 
+type IndexExpression struct {
+    Token token.Token
+    Left Expression
+    Index Expression
+}
 
-
-
+func (ui *IndexExpression) expressionNode() {}
+func (ui *IndexExpression) TokenLiteral() string { return ui.Token.Literal }
+func (ui *IndexExpression) String() string {
+    var out bytes.Buffer
+    out.WriteString("(")
+    out.WriteString(ui.Left.String())
+    out.WriteString("[")
+    out.WriteString(ui.Index.String())
+    out.WriteString("])")
+    
+    return out.String()
+}
 
