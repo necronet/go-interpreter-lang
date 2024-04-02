@@ -16,6 +16,7 @@ const (
     FUNCTION_OBJ = "FUNCTION"
     STRING_OBJ = "STRING"
     BUILTIN_OBJ = "BUILTIN"
+    ARRAY_OBJ = "ARRAY"
 )
 
 type ObjectType string
@@ -97,3 +98,27 @@ type Null struct {}
 
 func (n *Null) Inspect() string {return "null"}
 func (b *Null) Type() ObjectType { return NULL_OBJ} 
+
+type Array struct {
+    Elements []Object
+}
+
+func (ao *Array) Type() ObjectType { return ARRAY_OBJ }
+func (ao *Array) Inspect() string {
+
+    var out bytes.Buffer
+
+    elements := []string {}
+
+    for _, e := range ao.Elements {
+        elements =append(elements, e.Inspect())
+    }
+
+    out.WriteString("[")
+    out.WriteString(strings.Join(elements, ", "))
+    out.WriteString("]")
+
+    return out.String()
+}
+
+
