@@ -3,7 +3,9 @@ package object
 import (
 	"bytes"
 	"fmt"
-    "strings"
+	"hash/fnv"
+	"strings"
+
 	"necronet.info/interpreter/ast"
 )
 
@@ -92,7 +94,31 @@ type Boolean struct {
 func (b *Boolean) Inspect() string {return fmt.Sprintf("%t", b.Value)}
 func (b *Boolean) Type() ObjectType { return BOOLEAN_OBJ} 
 
+type HashKey struct {
+    Type ObjectType
+    Value uint64
+}
 
+func (b *Boolean) HashKey() HashKey {
+    var value uint64
+
+    if b.Value {
+        value = 1
+    } else {
+        value = 0
+    }
+    return HashKey{Type: b.Type(), Value: value}
+}
+
+func (i *Integer) HashKey() HashKey {
+    return HashKey{Type: i.Type(), Value: uint64(i.Value)}
+}
+
+func (s *String) HashKey() HashKey {
+    h := fnv.New64()
+    h.Write([]byte(s.Value))
+    return HashKey{Type: s.Type(), Value: h.Sum64()}
+}
 
 type Null struct {}
 
